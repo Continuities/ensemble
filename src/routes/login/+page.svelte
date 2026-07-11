@@ -1,42 +1,52 @@
 <script lang="ts">
-  import { enhance } from '$app/forms';
-  import type { ActionData } from './$types';
-
-  let { form }: { form: ActionData } = $props();
+  import { signinOrSignup } from '$lib/api/auth.remote';
+  import { getErrorMessage } from '$lib/utils';
+  import { Button } from '$lib/components/ui/button';
+  import { Label } from '$lib/components/ui/label';
+  import { Input } from '$lib/components/ui/input';
+  import * as Card from '$lib/components/ui/card';
+  let error = $state<string | undefined>(undefined);
 </script>
 
-<h1>Login</h1>
-<form method="post" action="?/signInEmail" use:enhance>
-  <label>
-    Email
-    <input
-      type="email"
-      name="email"
-      class="mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-    />
-  </label>
-  <label>
-    Password
-    <input
-      type="password"
-      name="password"
-      class="mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-    />
-  </label>
-  <label>
-    Name (for registration)
-    <input
-      name="name"
-      class="mt-1 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-    />
-  </label>
-  <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-    >Login</button
-  >
-  <button
-    formaction="?/signUpEmail"
-    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
-    >Register</button
-  >
+<form
+  class="flex flex-col gap-6 w-full justify-center items-center"
+  {...signinOrSignup.enhance(async (form) => {
+    try {
+      await form.submit();
+    } catch (err) {
+      error = getErrorMessage(err);
+    }
+  })}
+>
+  <Card.Root class="-my-4 w-full max-w-sm grow">
+    <Card.Header>
+      <Card.Title>Login</Card.Title>
+    </Card.Header>
+    <Card.Content>
+      <div class="flex flex-col gap-6">
+        <div class="grid gap-2">
+          <Label for="email">Email</Label>
+          <Input id="email" {...signinOrSignup.fields.email.as('email')} />
+        </div>
+        <div class="grid gap-2">
+          <Label for="password">Password</Label>
+          <Input id="password" {...signinOrSignup.fields._password.as('password')} />
+        </div>
+        <div class="grid gap-2">
+          <Label for="name">Name (for registration)</Label>
+          <Input id="name" {...signinOrSignup.fields.name.as('text')} />
+        </div>
+
+        {#if error}
+          <p class="text-red-500">{error}</p>
+        {/if}
+      </div>
+    </Card.Content>
+    <Card.Footer class="flex-col gap-2">
+      <Button class="w-full" {...signinOrSignup.fields.action.as('submit', 'signin')}>Login</Button>
+      <Button class="w-full" {...signinOrSignup.fields.action.as('submit', 'signup')}
+        >Register</Button
+      >
+    </Card.Footer>
+  </Card.Root>
 </form>
-<p class="text-red-500">{form?.message ?? ''}</p>
