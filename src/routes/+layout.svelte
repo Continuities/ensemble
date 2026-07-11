@@ -4,9 +4,10 @@
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import { locales, localizeHref } from '$lib/paraglide/runtime';
-  import favicon from '$lib/assets/favicon.svg';
+  import favicon from '$lib/assets/favicon.png';
   import Auth from '$lib/components/auth/auth.svelte';
   import { theme } from '$lib/theme.svelte';
+  import { m } from '$lib/paraglide/messages';
 
   let { children, data } = $props();
   let isAuthPage = $derived(page.url.pathname.startsWith('/signin'));
@@ -17,6 +18,14 @@
 </script>
 
 <svelte:head>
+  <title>{m.title()}</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="description" content={m.description()} />
+  <meta property="og:description" content={m.description()} />
+  <meta property="og:title" content={m.title()} />
+  <meta property="og:site_name" content={m.title()} />
   <link rel="icon" href={favicon} />
   <script>
     (function () {

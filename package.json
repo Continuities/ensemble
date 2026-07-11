@@ -1,5 +1,6 @@
 {
-  "name": "mutual-aid-map",
+  "name": "ensemble",
+  "description": "An app for disrupting individualism",
   "private": true,
   "version": "0.0.1",
   "type": "module",
