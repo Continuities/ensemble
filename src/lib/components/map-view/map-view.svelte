@@ -2,12 +2,20 @@
   import 'leaflet/dist/leaflet.css';
   import { onMount } from 'svelte';
   import { theme } from '$lib/theme.svelte';
+  import { renderComponentToHtml } from '$lib/utils';
+  import { NeedPopup } from '../need-popup';
+
+  interface Props {
+    needs: Need[];
+  }
 
   const TILE_LAYER_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
   const DARK_TILE_LAYER_URL =
     'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png';
 
   const tileLayerUrl = theme === 'dark' ? DARK_TILE_LAYER_URL : TILE_LAYER_URL;
+
+  let { needs }: Props = $props();
 
   onMount(async () => {
     const { default: Leaflet } = await import('leaflet');
@@ -16,6 +24,11 @@
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
+    map.locate({ setView: true, maxZoom: 16 });
+    for (const need of needs) {
+      const marker = Leaflet.marker([need.location.lat, need.location.lng]).addTo(map);
+      marker.bindPopup(renderComponentToHtml(NeedPopup, { need }));
+    }
   });
 </script>
 

@@ -14,6 +14,18 @@ declare global {
     // interface PageState {}
     // interface Platform {}
   }
+
+  interface PreciseLocation {
+    address: string;
+    lat: number;
+    lng: number;
+  }
+  interface Need {
+    id: string;
+    title: string;
+    description: string;
+    location: PreciseLocation;
+  }
 }
 
 export {};

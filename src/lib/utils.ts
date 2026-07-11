@@ -1,3 +1,4 @@
+import { mount, type Component } from 'svelte';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -30,4 +31,13 @@ export function getErrorMessage(error: unknown): string {
     }
   }
   return typeof error === 'string' ? error : 'Unknown error';
+}
+
+export function renderComponentToHtml<P extends Record<string, unknown>>(
+  component: Component<P>,
+  props: P
+) {
+  const container = document.createElement('div');
+  mount(component, { target: container, props });
+  return container.innerHTML;
 }
