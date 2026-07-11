@@ -5,14 +5,18 @@
   import { page } from '$app/state';
   import { locales, localizeHref } from '$lib/paraglide/runtime';
   import favicon from '$lib/assets/favicon.svg';
+  import Auth from '$lib/components/auth/auth.svelte';
 
-  let { children } = $props();
+  let { children, data } = $props();
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
-<div class="flex flex-col items-center justify-center min-h-screen gap-6 p-4">
+<nav class="absolute top-0 right-0 p-4">
+  <Auth user={data.user} />
+</nav>
+<main class="flex flex-col items-center justify-center min-h-screen gap-6 p-4">
   {@render children()}
-</div>
+</main>
 
 <div style="display:none">
   {#each locales as locale (locale)}
