@@ -1,6 +1,6 @@
-# Mutual Aid Map
+# Ensemble
 
-Helping neighbours help each other.
+An app to disrupt individualism.
 
 ## Initialising
 
