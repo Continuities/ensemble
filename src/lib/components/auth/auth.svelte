@@ -23,7 +23,7 @@
         </Avatar.Fallback>
       </Avatar.Root>
     </DropdownMenu.Trigger>
-    <DropdownMenu.Content class="w-56" align="end" sideOffset={16}>
+    <DropdownMenu.Content class="w-56 z-900" align="end" sideOffset={16}>
       <DropdownMenu.Label>{m.auth_account()}</DropdownMenu.Label>
       <DropdownMenu.Separator />
       <form {...signout}>
@@ -38,5 +38,5 @@
     </DropdownMenu.Content>
   </DropdownMenu.Root>
 {:else}
-  <Button variant="link" href="/signin">{m.auth_signin()}</Button>
+  <Button variant="default" href="/signin">{m.auth_signin()}</Button>
 {/if}

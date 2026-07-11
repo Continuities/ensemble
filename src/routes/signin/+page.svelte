@@ -9,7 +9,7 @@
 </script>
 
 <form
-  class="flex flex-col gap-6 w-full justify-center items-center"
+  class="flex flex-col gap-6 w-full h-full justify-center items-center"
   {...signinOrSignup.enhance(async (form) => {
     try {
       await form.submit();
@@ -18,7 +18,7 @@
     }
   })}
 >
-  <Card.Root class="-my-4 w-full max-w-sm grow">
+  <Card.Root class="w-full max-w-sm">
     <Card.Header>
       <Card.Title>Login</Card.Title>
     </Card.Header>
