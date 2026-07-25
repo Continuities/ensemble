@@ -4,6 +4,7 @@
   import { theme } from '$lib/theme.svelte';
   import { renderComponentToHtml } from '$lib/utils';
   import { AidRequestPopup } from '../aid-request-popup';
+  import { AidRequestMarker } from '../aid-request-marker';
 
   interface Props {
     aidRequests: AidRequest[];
@@ -26,7 +27,18 @@
     }).addTo(map);
     map.locate({ setView: true, maxZoom: 16 });
     for (const aidRequest of aidRequests) {
-      const marker = Leaflet.marker([aidRequest.location.lat, aidRequest.location.lng]).addTo(map);
+      const markerIcon = Leaflet.divIcon({
+        html: renderComponentToHtml(AidRequestMarker, { aidRequest }),
+        className: '',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize: [41, 41]
+      });
+      const marker = Leaflet.marker([aidRequest.location.lat, aidRequest.location.lng], {
+        icon: markerIcon
+      }).addTo(map);
       marker.bindPopup(renderComponentToHtml(AidRequestPopup, { aidRequest }));
     }
   });
