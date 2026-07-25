@@ -5,5 +5,9 @@
 
   "auth_signin": "Se connecter",
   "auth_signout": "Se déconnecter",
-  "auth_account": "Mon compte"
+  "auth_account": "Mon compte",
+
+  "aid_create": "Créer une demande d'aide",
+  "aid_description": "Renseignez les détails de vos besoins, et il sera affiché à votre communauté.",
+  "aid_disclaimer": "En cas d'urgence, veuillez composer le 911."
 }

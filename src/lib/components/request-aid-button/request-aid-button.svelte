@@ -1,0 +1,75 @@
+<script lang="ts">
+  import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
+  import CrossIcon from '@lucide/svelte/icons/cross';
+  import { m } from '$lib/paraglide/messages';
+  import { createAidRequest } from '$lib/api/aid.remote';
+  import * as Dialog from '$lib/components/ui/dialog';
+  import { Label } from '$lib/components/ui/label';
+  import * as Select from '$lib/components/ui/select';
+  import { AID_TYPE } from '$lib/aid';
+
+  let isDialogOpen = $state(false);
+  let selectedKey = $state<AidTypeKey | undefined>(undefined);
+  let selected = $derived(selectedKey ? AID_TYPE[selectedKey] : undefined);
+</script>
+
+<Dialog.Root bind:open={isDialogOpen}>
+  <Dialog.Trigger type="button" class={buttonVariants({ variant: 'default', size: 'lg' })}>
+    <CrossIcon />
+    {m.aid_create()}
+  </Dialog.Trigger>
+  <Dialog.Content class="z-900">
+    <form
+      {...createAidRequest.enhance(async (form) => {
+        try {
+          const success = await form.submit();
+          if (success) {
+            selectedKey = undefined;
+            isDialogOpen = false;
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      })}
+    >
+      <Dialog.Header>
+        <Dialog.Title>{m.aid_create()}</Dialog.Title>
+        <Dialog.Description>
+          {m.aid_description()}
+          <div class="italic mt-1">{m.aid_disclaimer()}</div>
+        </Dialog.Description>
+      </Dialog.Header>
+      <div class="flex flex-col">
+        <div class="grid gap-2">
+          <Label for="aid-type">{m.aid_type()}</Label>
+          <Select.Root
+            required
+            type="single"
+            {...createAidRequest.fields.aidType.as('select')}
+            bind:value={selectedKey}
+          >
+            <Select.Trigger id="aid-type">
+              {#if selected}
+                <selected.icon />
+                {selected.name}
+              {:else}
+                {m.aid_selecttype()}
+              {/if}
+            </Select.Trigger>
+            <Select.Content>
+              {#each Object.entries(AID_TYPE) as [key, { name, icon: AidIcon }] (key)}
+                <Select.Item value={key}><AidIcon />{name}</Select.Item>
+              {/each}
+            </Select.Content>
+          </Select.Root>
+        </div>
+      </div>
+      <Dialog.Footer>
+        <Dialog.Close type="button" class={buttonVariants({ variant: 'outline' })}>
+          {m.cancel()}
+        </Dialog.Close>
+        <Button type="submit" disabled={!!createAidRequest.pending}>{m.save()}</Button>
+      </Dialog.Footer>
+    </form>
+  </Dialog.Content>
+</Dialog.Root>
