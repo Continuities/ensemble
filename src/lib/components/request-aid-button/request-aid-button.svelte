@@ -3,10 +3,12 @@
   import CrossIcon from '@lucide/svelte/icons/cross';
   import { m } from '$lib/paraglide/messages';
   import { createAidRequest } from '$lib/api/aid.remote';
+  import { AID_TYPE } from '$lib/aid';
   import * as Dialog from '$lib/components/ui/dialog';
   import { Label } from '$lib/components/ui/label';
   import * as Select from '$lib/components/ui/select';
-  import { AID_TYPE } from '$lib/aid';
+  import { Input } from '$lib/components/ui/input';
+  import { Textarea } from '$lib/components/ui/textarea/';
 
   let isDialogOpen = $state(false);
   let selectedKey = $state<AidTypeKey | undefined>(undefined);
@@ -20,6 +22,7 @@
   </Dialog.Trigger>
   <Dialog.Content class="z-900">
     <form
+      class="grid gap-6"
       {...createAidRequest.enhance(async (form) => {
         try {
           const success = await form.submit();
@@ -39,7 +42,7 @@
           <div class="italic mt-1">{m.aid_disclaimer()}</div>
         </Dialog.Description>
       </Dialog.Header>
-      <div class="flex flex-col">
+      <div class="grid gap-4">
         <div class="grid gap-2">
           <Label for="aid-type">{m.aid_type()}</Label>
           <Select.Root
@@ -62,6 +65,22 @@
               {/each}
             </Select.Content>
           </Select.Root>
+        </div>
+        <div class="grid gap-2">
+          <Label for="short-description">{m.aid_shortdescription()}</Label>
+          <Input id="short-description" {...createAidRequest.fields.shortDescription.as('text')} />
+        </div>
+        <div class="grid gap-2">
+          <Label for="details">{m.aid_details()}</Label>
+          <Textarea id="details" {...createAidRequest.fields.details.as('text')} />
+        </div>
+        <div class="grid gap-2">
+          <Label for="location">{m.aid_location()}</Label>
+          <Input id="location" {...createAidRequest.fields.location.as('text')} />
+        </div>
+        <div class="grid gap-2">
+          <Label for="date">{m.aid_date()}</Label>
+          <Input id="date" {...createAidRequest.fields.date.as('date')} />
         </div>
       </div>
       <Dialog.Footer>
