@@ -3,10 +3,10 @@
   import { onMount } from 'svelte';
   import { theme } from '$lib/theme.svelte';
   import { renderComponentToHtml } from '$lib/utils';
-  import { NeedPopup } from '../need-popup';
+  import { AidRequestPopup } from '../aid-request-popup';
 
   interface Props {
-    needs: Need[];
+    aidRequests: AidRequest[];
   }
 
   const TILE_LAYER_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -15,7 +15,7 @@
 
   const tileLayerUrl = theme === 'dark' ? DARK_TILE_LAYER_URL : TILE_LAYER_URL;
 
-  let { needs }: Props = $props();
+  let { aidRequests }: Props = $props();
 
   onMount(async () => {
     const { default: Leaflet } = await import('leaflet');
@@ -25,9 +25,9 @@
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
     map.locate({ setView: true, maxZoom: 16 });
-    for (const need of needs) {
-      const marker = Leaflet.marker([need.location.lat, need.location.lng]).addTo(map);
-      marker.bindPopup(renderComponentToHtml(NeedPopup, { need }));
+    for (const aidRequest of aidRequests) {
+      const marker = Leaflet.marker([aidRequest.location.lat, aidRequest.location.lng]).addTo(map);
+      marker.bindPopup(renderComponentToHtml(AidRequestPopup, { aidRequest }));
     }
   });
 </script>

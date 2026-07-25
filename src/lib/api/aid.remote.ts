@@ -9,7 +9,7 @@ export const createAidRequest = form(
     aidType: v.picklist(Object.keys(AID_TYPE) as AidTypeKey[]),
     shortDescription: v.pipe(v.string(), v.nonEmpty(), v.maxLength(100)),
     details: v.pipe(v.string(), v.nonEmpty(), v.maxLength(300)),
-    location: v.pipe(v.string(), v.maxLength(100)),
+    location: v.optional(v.pipe(v.string(), v.maxLength(100))),
     date: v.pipe(v.string(), v.isoDate())
   }),
   async ({ aidType, shortDescription, details, location, date }) => {

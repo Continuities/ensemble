@@ -1,12 +1,14 @@
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async (): Promise<{ needs: Need[] }> => {
+export const load: PageServerLoad = async (): Promise<{ aidRequests: AidRequest[] }> => {
   return {
-    needs: [
+    aidRequests: [
       {
         id: '1',
-        title: 'Body Doubling',
-        description: 'I need someone to sit with me while I make medical appointments.',
+        aidType: 'social',
+        shortDescription: 'Body Doubling',
+        details: 'I need someone to sit with me while I make medical appointments.',
+        date: new Date('2027-01-01'),
         location: {
           address: '6482 Boul. Saint-Laurent, Montréal, QC, Canada',
           lat: 45.53057025954018,

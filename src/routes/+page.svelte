@@ -4,7 +4,7 @@
   let { data } = $props();
 </script>
 
-<MapView needs={data.needs} />
+<MapView aidRequests={data.aidRequests} />
 <div class="absolute flex justify-center w-full bottom-12 z-900 pointer-events-none">
   <div class="pointer-events-auto">
     <RequestAidButton />

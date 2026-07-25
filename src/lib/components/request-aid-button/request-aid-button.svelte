@@ -10,6 +10,9 @@
   import { Input } from '$lib/components/ui/input';
   import { Textarea } from '$lib/components/ui/textarea/';
 
+  const aidTypes = Object.entries(AID_TYPE);
+  aidTypes.sort(([a], [b]) => a.localeCompare(b));
+
   let isDialogOpen = $state(false);
   let selectedKey = $state<AidTypeKey | undefined>(undefined);
   let selected = $derived(selectedKey ? AID_TYPE[selectedKey] : undefined);
@@ -60,7 +63,7 @@
               {/if}
             </Select.Trigger>
             <Select.Content>
-              {#each Object.entries(AID_TYPE) as [key, { name, icon: AidIcon }] (key)}
+              {#each aidTypes as [key, { name, icon: AidIcon }] (key)}
                 <Select.Item value={key}><AidIcon />{name}</Select.Item>
               {/each}
             </Select.Content>
@@ -68,19 +71,23 @@
         </div>
         <div class="grid gap-2">
           <Label for="short-description">{m.aid_shortdescription()}</Label>
-          <Input id="short-description" {...createAidRequest.fields.shortDescription.as('text')} />
+          <Input
+            required
+            id="short-description"
+            {...createAidRequest.fields.shortDescription.as('text')}
+          />
         </div>
         <div class="grid gap-2">
           <Label for="details">{m.aid_details()}</Label>
-          <Textarea id="details" {...createAidRequest.fields.details.as('text')} />
+          <Textarea required id="details" {...createAidRequest.fields.details.as('text')} />
+        </div>
+        <div class="grid gap-2">
+          <Label for="date">{m.aid_date()}</Label>
+          <Input required id="date" {...createAidRequest.fields.date.as('date')} />
         </div>
         <div class="grid gap-2">
           <Label for="location">{m.aid_location()}</Label>
           <Input id="location" {...createAidRequest.fields.location.as('text')} />
-        </div>
-        <div class="grid gap-2">
-          <Label for="date">{m.aid_date()}</Label>
-          <Input id="date" {...createAidRequest.fields.date.as('date')} />
         </div>
       </div>
       <Dialog.Footer>
