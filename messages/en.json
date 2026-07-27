@@ -3,7 +3,26 @@
   "title": "ensemble",
   "description": "An app for disrupting individualism",
 
+  "save": "Save",
+  "cancel": "Cancel",
+
   "auth_signin": "Sign in",
   "auth_signout": "Sign out",
-  "auth_account": "My Account"
+  "auth_account": "My Account",
+
+  "aid_create": "Create an aid request",
+  "aid_description": "Fill in the details of your need, and it will be displayed to your community.",
+  "aid_disclaimer": "For emergency or urgent care, please call 911.",
+  "aid_type": "Type of aid requested",
+  "aid_selecttype": "Select a type of aid",
+  "aid_type_labour": "Labour",
+  "aid_type_social": "Social",
+  "aid_type_transport": "Transportation",
+  "aid_type_resources": "Resources",
+  "aid_type_skill": "Skills",
+  "aid_shortdescription": "Short description",
+  "aid_details": "Details",
+  "aid_location": "Location",
+  "aid_deadline": "Needed by",
+  "aid_date": "Needed on"
 }
