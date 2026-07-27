@@ -4,21 +4,24 @@ import { APIError } from 'better-auth';
 import { error } from '@sveltejs/kit';
 import { AID_TYPE } from '$lib/aid';
 import { createAidRequest } from '$lib/server/aid';
+import { geocodeAddress } from '$lib/server/geocode';
 
-const getLocationFromAddress = (address: string | undefined): PreciseLocation | undefined => {
-  // TODO: Real gps coords from address
-  const pos: { lat: number; lng: number } = {
-    lat: 45.53057025954018,
-    lng: -73.60939989314936
+const getLocationFromAddress = async (
+  address: string | undefined
+): Promise<PreciseLocation | undefined> => {
+  if (!address) {
+    return undefined;
+  }
+  const coords = await geocodeAddress(address);
+  if (!coords) {
+    console.warn('Could not geocode address ', address);
+    return undefined;
+  }
+  return {
+    address,
+    lat: coords.lat,
+    lng: coords.lng
   };
-  pos.lat += Math.random() * 0.01 - 0.005;
-  pos.lng += Math.random() * 0.01 - 0.005;
-  return address
-    ? {
-        address,
-        ...pos
-      }
-    : undefined;
 };
 
 export const createAidRequestForm = form(
@@ -35,7 +38,7 @@ export const createAidRequestForm = form(
         aidType,
         shortDescription,
         details,
-        location: getLocationFromAddress(location),
+        location: await getLocationFromAddress(location),
         date: new Date(date)
       });
     } catch (e) {
