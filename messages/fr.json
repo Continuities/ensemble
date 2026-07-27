@@ -9,5 +9,17 @@
 
   "aid_create": "Créer une demande d'aide",
   "aid_description": "Renseignez les détails de vos besoins, et il sera affiché à votre communauté.",
-  "aid_disclaimer": "En cas d'urgence, veuillez composer le 911."
+  "aid_disclaimer": "En cas d'urgence, veuillez composer le 911.",
+  "aid_type": "Type d'aide demandée",
+  "aid_selecttype" : "Sélectionnez un type d'aide",
+  "aid_type_labour" : "Main-d'œuvre",
+  "aid_type_social": "Social",
+  "aid_type_transport" : "Transport",
+  "aid_type_resources" : "Ressources",
+  "aid_type_skill" : "Compétences",
+  "aid_shortdescription" : "Brève description",
+  "aid_details" : "Détails",
+  "aid_location" : "Lieu",
+  "aid_deadline": "À fournir avant le",
+  "aid_date": "À fournir le"
 }
