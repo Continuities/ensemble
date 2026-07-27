@@ -6,6 +6,7 @@
   import { AidRequestPopup } from '../aid-request-popup';
   import { AidRequestMarker } from '../aid-request-marker';
   import { type LayerGroup, type Map as LeafletMap } from 'leaflet';
+  import { bindPopup } from '.';
 
   interface Props {
     aidRequests: AidRequest[];
@@ -18,9 +19,14 @@
   const tileLayerUrl = theme === 'dark' ? DARK_TILE_LAYER_URL : TILE_LAYER_URL;
 
   let { aidRequests }: Props = $props();
+  let aidRequestsById = $derived(new Map(aidRequests.map((r) => [r.id, r])));
   let Leaflet = $state<typeof import('leaflet') | undefined>(undefined);
   let map = $state<LeafletMap | undefined>(undefined);
   let markerGroup = $state<LayerGroup | undefined>(undefined);
+  let selectedAidRequestId = $state<string | undefined>(undefined);
+  let selectedAidRequest = $derived(
+    selectedAidRequestId ? aidRequestsById.get(selectedAidRequestId) : undefined
+  );
 
   $effect(() => {
     if (!map || !Leaflet) {
@@ -48,6 +54,7 @@
         icon: markerIcon
       }).addTo(map);
       marker.bindPopup(renderComponentToHtml(AidRequestPopup, { aidRequest }));
+      marker.on('click', () => (selectedAidRequestId = aidRequest.id));
     }
   });
 
@@ -59,6 +66,23 @@
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
     map.locate({ setView: true, maxZoom: 16 });
+
+    map.on('popupopen', ({ popup }) => {
+      const refresh = () => {
+        if (selectedAidRequest) {
+          popup.setContent(
+            renderComponentToHtml(AidRequestPopup, { aidRequest: selectedAidRequest })
+          );
+          popup.update();
+          bindPopup(refresh);
+        } else {
+          popup.close();
+        }
+      };
+      // Leaflet renders new html each time the popup opens, so we have
+      // to manually bind click handlers to buttons when it does
+      bindPopup(refresh);
+    });
   });
 </script>
 

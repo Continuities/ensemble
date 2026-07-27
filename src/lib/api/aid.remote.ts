@@ -1,5 +1,5 @@
 import * as v from 'valibot';
-import { form, getRequestEvent } from '$app/server';
+import { form, command, getRequestEvent } from '$app/server';
 import { APIError } from 'better-auth';
 import { error } from '@sveltejs/kit';
 import { AID_TYPE } from '$lib/aid';
@@ -56,6 +56,14 @@ export const createAidRequestForm = form(
       error(500, 'Unexpected error');
     }
 
+    return { success: true };
+  }
+);
+
+export const offerAid = command(
+  v.pipe(v.string(), v.uuid(), v.nonEmpty()),
+  async (aidRequestId) => {
+    console.log('OFFER AID FOR REQUEST ', aidRequestId);
     return { success: true };
   }
 );
