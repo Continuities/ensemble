@@ -24,5 +24,8 @@
   "aid_details": "Details",
   "aid_location": "Location",
   "aid_deadline": "Needed by",
-  "aid_date": "Needed on"
+  "aid_date": "Needed on",
+  "aid_offer": "Offer aid",
+  "aid_cancel": "Cancel aid request",
+  "aid_canceloffer": "Cancel offer"
 }

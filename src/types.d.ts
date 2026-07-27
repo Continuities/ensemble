@@ -15,12 +15,19 @@ declare global {
     lng: number;
   }
 
+  interface Helper {
+    helperId: string;
+    aidRequestId: string;
+    status: 'helping' | 'pending' | 'declined';
+  }
   interface AidRequest {
     id: string;
+    createdBy: string;
     aidType: AidTypeKey;
     shortDescription: string;
     details: string;
     location?: PreciseLocation;
     date: Date;
+    helpers?: Helper[];
   }
 }

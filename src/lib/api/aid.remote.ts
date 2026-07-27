@@ -1,9 +1,15 @@
 import * as v from 'valibot';
-import { form, getRequestEvent } from '$app/server';
+import { form, command, getRequestEvent } from '$app/server';
 import { APIError } from 'better-auth';
 import { error } from '@sveltejs/kit';
 import { AID_TYPE } from '$lib/aid';
-import { createAidRequest } from '$lib/server/aid';
+import {
+  createAidOffer,
+  createAidRequest,
+  deleteAidOffer,
+  deleteAidRequest,
+  getAidRequest
+} from '$lib/server/aid';
 import { geocodeAddress } from '$lib/server/geocode';
 import { auth } from '$lib/server/auth';
 
@@ -47,7 +53,8 @@ export const createAidRequestForm = form(
         shortDescription,
         details,
         location: await getLocationFromAddress(location),
-        date: new Date(date)
+        date: new Date(date),
+        createdBy: session.user.id
       });
     } catch (e) {
       if (e instanceof APIError) {
@@ -56,6 +63,55 @@ export const createAidRequestForm = form(
       error(500, 'Unexpected error');
     }
 
+    return { success: true };
+  }
+);
+
+export const offerAid = command(
+  v.pipe(v.string(), v.uuid(), v.nonEmpty()),
+  async (aidRequestId) => {
+    const event = getRequestEvent();
+    const session = await auth.api.getSession({
+      headers: event.request.headers
+    });
+    if (!session) {
+      error(401, 'Not logged in');
+    }
+    await createAidOffer(session.user.id, aidRequestId);
+    return { success: true };
+  }
+);
+
+export const cancelOffer = command(
+  v.pipe(v.string(), v.uuid(), v.nonEmpty()),
+  async (aidRequestId) => {
+    const event = getRequestEvent();
+    const session = await auth.api.getSession({
+      headers: event.request.headers
+    });
+    if (!session) {
+      error(401, 'Not logged in');
+    }
+    await deleteAidOffer(session.user.id, aidRequestId);
+    return { success: true };
+  }
+);
+
+export const cancelRequest = command(
+  v.pipe(v.string(), v.uuid(), v.nonEmpty()),
+  async (aidRequestId) => {
+    const event = getRequestEvent();
+    const session = await auth.api.getSession({
+      headers: event.request.headers
+    });
+    if (!session) {
+      error(401, 'Not logged in');
+    }
+    const aidRequest = await getAidRequest(aidRequestId);
+    if (!aidRequest || aidRequest.createdBy !== session.user.id) {
+      error(401, 'Permission denied');
+    }
+    await deleteAidRequest(aidRequestId);
     return { success: true };
   }
 );
