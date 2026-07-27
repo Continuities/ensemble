@@ -8,6 +8,9 @@
   }
 
   let { aidRequest, currentUser }: Props = $props();
+  let isHelping = $derived(
+    Boolean(aidRequest.helpers?.find((h) => h.helperId === currentUser?.id))
+  );
 </script>
 
 <div class="flex flex-col gap-2">
@@ -25,6 +28,10 @@
           data-aid-request-id={aidRequest.id}
         >
           {m.aid_cancel()}
+        </Button>
+      {:else if isHelping}
+        <Button variant="destructive" id="cancel-offer-button" data-aid-request-id={aidRequest.id}>
+          {m.aid_canceloffer()}
         </Button>
       {:else}
         <Button variant="secondary" id="offer-aid-button" data-aid-request-id={aidRequest.id}>

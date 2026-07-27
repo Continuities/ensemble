@@ -3,7 +3,13 @@ import { form, command, getRequestEvent } from '$app/server';
 import { APIError } from 'better-auth';
 import { error } from '@sveltejs/kit';
 import { AID_TYPE } from '$lib/aid';
-import { createAidRequest } from '$lib/server/aid';
+import {
+  createAidOffer,
+  createAidRequest,
+  deleteAidOffer,
+  deleteAidRequest,
+  getAidRequest
+} from '$lib/server/aid';
 import { geocodeAddress } from '$lib/server/geocode';
 import { auth } from '$lib/server/auth';
 
@@ -64,7 +70,14 @@ export const createAidRequestForm = form(
 export const offerAid = command(
   v.pipe(v.string(), v.uuid(), v.nonEmpty()),
   async (aidRequestId) => {
-    console.log('OFFER AID FOR REQUEST ', aidRequestId);
+    const event = getRequestEvent();
+    const session = await auth.api.getSession({
+      headers: event.request.headers
+    });
+    if (!session) {
+      error(401, 'Not logged in');
+    }
+    await createAidOffer(session.user.id, aidRequestId);
     return { success: true };
   }
 );
@@ -72,7 +85,14 @@ export const offerAid = command(
 export const cancelOffer = command(
   v.pipe(v.string(), v.uuid(), v.nonEmpty()),
   async (aidRequestId) => {
-    console.log('CANCEL AID OFFER ', aidRequestId);
+    const event = getRequestEvent();
+    const session = await auth.api.getSession({
+      headers: event.request.headers
+    });
+    if (!session) {
+      error(401, 'Not logged in');
+    }
+    await deleteAidOffer(session.user.id, aidRequestId);
     return { success: true };
   }
 );
@@ -80,7 +100,18 @@ export const cancelOffer = command(
 export const cancelRequest = command(
   v.pipe(v.string(), v.uuid(), v.nonEmpty()),
   async (aidRequestId) => {
-    console.log('CANCEL AID REQUEST ', aidRequestId);
+    const event = getRequestEvent();
+    const session = await auth.api.getSession({
+      headers: event.request.headers
+    });
+    if (!session) {
+      error(401, 'Not logged in');
+    }
+    const aidRequest = await getAidRequest(aidRequestId);
+    if (!aidRequest || aidRequest.createdBy !== session.user.id) {
+      error(401, 'Permission denied');
+    }
+    await deleteAidRequest(aidRequestId);
     return { success: true };
   }
 );
