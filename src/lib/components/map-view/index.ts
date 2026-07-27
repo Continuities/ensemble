@@ -1,4 +1,5 @@
 import { cancelOffer, cancelRequest, offerAid } from '$lib/api/aid.remote';
+import { invalidate } from '$app/navigation';
 import Root from './map-view.svelte';
 
 export {
@@ -7,7 +8,7 @@ export {
   Root as MapView
 };
 
-export function bindPopup(refresh: () => void) {
+export function bindPopup() {
   const offerAidButton = document.getElementById('offer-aid-button');
   const cancelRequestButton = document.getElementById('cancel-request-button');
   const cancelOfferButton = document.getElementById('cancel-offer-button');
@@ -18,7 +19,7 @@ export function bindPopup(refresh: () => void) {
       const id = target.getAttribute('data-aid-request-id');
       if (id) {
         await offerAid(id);
-        refresh();
+        invalidate('aidRequests');
       } else {
         console.error('Bad data-aid-request-id:', id);
       }
@@ -31,7 +32,7 @@ export function bindPopup(refresh: () => void) {
       const id = target.getAttribute('data-aid-request-id');
       if (id) {
         await cancelRequest(id);
-        refresh();
+        invalidate('aidRequests');
       } else {
         console.error('Bad data-aid-request-id:', id);
       }
@@ -44,7 +45,7 @@ export function bindPopup(refresh: () => void) {
       const id = target.getAttribute('data-aid-request-id');
       if (id) {
         await cancelOffer(id);
-        refresh();
+        invalidate('aidRequests');
       } else {
         console.error('Bad data-aid-request-id:', id);
       }
