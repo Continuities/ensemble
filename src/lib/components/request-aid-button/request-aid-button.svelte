@@ -13,89 +13,101 @@
   const aidTypes = Object.entries(AID_TYPE);
   aidTypes.sort(([a], [b]) => a.localeCompare(b));
 
+  interface Props {
+    isLoggedIn?: boolean;
+  }
+  let { isLoggedIn }: Props = $props();
+
   let isDialogOpen = $state(false);
   let selectedKey = $state<AidTypeKey | undefined>(undefined);
   let selected = $derived(selectedKey ? AID_TYPE[selectedKey] : undefined);
 </script>
 
-<Dialog.Root bind:open={isDialogOpen}>
-  <Dialog.Trigger type="button" class={buttonVariants({ variant: 'default', size: 'lg' })}>
+{#if !isLoggedIn}
+  <Button href="/signin" variant="default" size="lg">
     <CrossIcon />
     {m.aid_create()}
-  </Dialog.Trigger>
-  <Dialog.Content class="z-900">
-    <form
-      class="grid gap-6"
-      {...createAidRequestForm.enhance(async (form) => {
-        try {
-          const success = await form.submit();
-          if (success) {
-            selectedKey = undefined;
-            isDialogOpen = false;
+  </Button>
+{:else}
+  <Dialog.Root bind:open={isDialogOpen}>
+    <Dialog.Trigger type="button" class={buttonVariants({ variant: 'default', size: 'lg' })}>
+      <CrossIcon />
+      {m.aid_create()}
+    </Dialog.Trigger>
+    <Dialog.Content class="z-900">
+      <form
+        class="grid gap-6"
+        {...createAidRequestForm.enhance(async (form) => {
+          try {
+            const success = await form.submit();
+            if (success) {
+              selectedKey = undefined;
+              isDialogOpen = false;
+            }
+          } catch (err) {
+            console.error(err);
           }
-        } catch (err) {
-          console.error(err);
-        }
-      })}
-    >
-      <Dialog.Header>
-        <Dialog.Title>{m.aid_create()}</Dialog.Title>
-        <Dialog.Description>
-          {m.aid_description()}
-          <div class="italic mt-1">{m.aid_disclaimer()}</div>
-        </Dialog.Description>
-      </Dialog.Header>
-      <div class="grid gap-4">
-        <div class="grid gap-2">
-          <Label for="aid-type">{m.aid_type()}</Label>
-          <Select.Root
-            required
-            type="single"
-            {...createAidRequestForm.fields.aidType.as('select')}
-            bind:value={selectedKey}
-          >
-            <Select.Trigger id="aid-type">
-              {#if selected}
-                <selected.icon />
-                {selected.name}
-              {:else}
-                {m.aid_selecttype()}
-              {/if}
-            </Select.Trigger>
-            <Select.Content>
-              {#each aidTypes as [key, { name, icon: AidIcon }] (key)}
-                <Select.Item value={key}><AidIcon />{name}</Select.Item>
-              {/each}
-            </Select.Content>
-          </Select.Root>
+        })}
+      >
+        <Dialog.Header>
+          <Dialog.Title>{m.aid_create()}</Dialog.Title>
+          <Dialog.Description>
+            {m.aid_description()}
+            <div class="italic mt-1">{m.aid_disclaimer()}</div>
+          </Dialog.Description>
+        </Dialog.Header>
+        <div class="grid gap-4">
+          <div class="grid gap-2">
+            <Label for="aid-type">{m.aid_type()}</Label>
+            <Select.Root
+              required
+              type="single"
+              {...createAidRequestForm.fields.aidType.as('select')}
+              bind:value={selectedKey}
+            >
+              <Select.Trigger id="aid-type">
+                {#if selected}
+                  <selected.icon />
+                  {selected.name}
+                {:else}
+                  {m.aid_selecttype()}
+                {/if}
+              </Select.Trigger>
+              <Select.Content>
+                {#each aidTypes as [key, { name, icon: AidIcon }] (key)}
+                  <Select.Item value={key}><AidIcon />{name}</Select.Item>
+                {/each}
+              </Select.Content>
+            </Select.Root>
+          </div>
+          <div class="grid gap-2">
+            <Label for="short-description">{m.aid_shortdescription()}</Label>
+            <Input
+              required
+              id="short-description"
+              {...createAidRequestForm.fields.shortDescription.as('text')}
+            />
+          </div>
+          <div class="grid gap-2">
+            <Label for="details">{m.aid_details()}</Label>
+            <Textarea required id="details" {...createAidRequestForm.fields.details.as('text')} />
+          </div>
+          <div class="grid gap-2">
+            <Label for="date">{m.aid_date()}</Label>
+            <Input required id="date" {...createAidRequestForm.fields.date.as('date')} />
+          </div>
+          <div class="grid gap-2">
+            <Label for="location">{m.aid_location()}</Label>
+            <Input id="location" {...createAidRequestForm.fields.location.as('text')} />
+          </div>
         </div>
-        <div class="grid gap-2">
-          <Label for="short-description">{m.aid_shortdescription()}</Label>
-          <Input
-            required
-            id="short-description"
-            {...createAidRequestForm.fields.shortDescription.as('text')}
-          />
-        </div>
-        <div class="grid gap-2">
-          <Label for="details">{m.aid_details()}</Label>
-          <Textarea required id="details" {...createAidRequestForm.fields.details.as('text')} />
-        </div>
-        <div class="grid gap-2">
-          <Label for="date">{m.aid_date()}</Label>
-          <Input required id="date" {...createAidRequestForm.fields.date.as('date')} />
-        </div>
-        <div class="grid gap-2">
-          <Label for="location">{m.aid_location()}</Label>
-          <Input id="location" {...createAidRequestForm.fields.location.as('text')} />
-        </div>
-      </div>
-      <Dialog.Footer>
-        <Dialog.Close type="button" class={buttonVariants({ variant: 'outline' })}>
-          {m.cancel()}
-        </Dialog.Close>
-        <Button type="submit" disabled={!!createAidRequestForm.pending}>{m.save()}</Button>
-      </Dialog.Footer>
-    </form>
-  </Dialog.Content>
-</Dialog.Root>
+        <Dialog.Footer>
+          <Dialog.Close type="button" class={buttonVariants({ variant: 'outline' })}>
+            {m.cancel()}
+          </Dialog.Close>
+          <Button type="submit" disabled={!!createAidRequestForm.pending}>{m.save()}</Button>
+        </Dialog.Footer>
+      </form>
+    </Dialog.Content>
+  </Dialog.Root>
+{/if}

@@ -7,6 +7,6 @@
 <MapView aidRequests={data.aidRequests} />
 <div class="absolute flex justify-center w-full bottom-12 z-900 pointer-events-none">
   <div class="pointer-events-auto">
-    <RequestAidButton />
+    <RequestAidButton isLoggedIn={Boolean(data.user)} />
   </div>
 </div>

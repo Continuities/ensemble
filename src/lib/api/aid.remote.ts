@@ -1,10 +1,11 @@
 import * as v from 'valibot';
-import { form } from '$app/server';
+import { form, getRequestEvent } from '$app/server';
 import { APIError } from 'better-auth';
 import { error } from '@sveltejs/kit';
 import { AID_TYPE } from '$lib/aid';
 import { createAidRequest } from '$lib/server/aid';
 import { geocodeAddress } from '$lib/server/geocode';
+import { auth } from '$lib/server/auth';
 
 const getLocationFromAddress = async (
   address: string | undefined
@@ -33,6 +34,13 @@ export const createAidRequestForm = form(
     date: v.pipe(v.string(), v.isoDate())
   }),
   async ({ aidType, shortDescription, details, location, date }) => {
+    const event = getRequestEvent();
+    const session = await auth.api.getSession({
+      headers: event.request.headers
+    });
+    if (!session) {
+      error(401, 'Not logged in');
+    }
     try {
       await createAidRequest({
         aidType,
