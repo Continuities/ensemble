@@ -21,5 +21,8 @@
   "aid_details" : "Détails",
   "aid_location" : "Lieu",
   "aid_deadline": "À fournir avant le",
-  "aid_date": "À fournir le"
+  "aid_date": "À fournir le",
+  "aid_offer" : "Proposer de l'aide",
+  "aid_cancel": "Annuler la demande d'aide",
+  "aid_canceloffer" : "Annuler l'offre"
 }

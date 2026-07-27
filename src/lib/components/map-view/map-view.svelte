@@ -5,7 +5,7 @@
   import { renderComponentToHtml } from '$lib/utils';
   import { AidRequestPopup } from '../aid-request-popup';
   import { AidRequestMarker } from '../aid-request-marker';
-  import { type Marker, type Popup, type LayerGroup, type Map as LeafletMap } from 'leaflet';
+  import { type Marker, type Popup, type Map as LeafletMap } from 'leaflet';
   import { bindPopup } from '.';
   import type { User } from 'better-auth';
 
