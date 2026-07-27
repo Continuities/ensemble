@@ -27,6 +27,9 @@
     }).addTo(map);
     map.locate({ setView: true, maxZoom: 16 });
     for (const aidRequest of aidRequests) {
+      if (!aidRequest.location) {
+        continue;
+      }
       const markerIcon = Leaflet.divIcon({
         html: renderComponentToHtml(AidRequestMarker, { aidRequest }),
         className: '',

@@ -1,14 +1,14 @@
 import {} from 'better-auth';
-import { pgTable, uuid, text, timestamp, date } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, timestamp, date, point } from 'drizzle-orm/pg-core';
 
 export const aidRequest = pgTable('aid_request', {
   id: uuid().defaultRandom().primaryKey(),
   aidType: text('aid_type').notNull(),
   shortDescription: text('short_description').notNull(),
+  details: text('details').notNull(),
   date: date('date').notNull(),
-  location: text('location'),
-  latitude: text('latitude'),
-  longitude: text('longitude'),
+  address: text('address'),
+  location: point('location', { mode: 'xy' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()

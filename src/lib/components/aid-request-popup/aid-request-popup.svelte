@@ -8,6 +8,8 @@
 
 <div class="flex flex-col gap-2">
   <div>{aidRequest.shortDescription}</div>
-  <div>{aidRequest.location.address}</div>
+  {#if aidRequest.location}
+    <div>{aidRequest.location.address}</div>
+  {/if}
   <div>{aidRequest.details}</div>
 </div>

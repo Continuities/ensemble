@@ -2,7 +2,7 @@
   import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
   import CrossIcon from '@lucide/svelte/icons/cross';
   import { m } from '$lib/paraglide/messages';
-  import { createAidRequest } from '$lib/api/aid.remote';
+  import { createAidRequestForm } from '$lib/api/aid.remote';
   import { AID_TYPE } from '$lib/aid';
   import * as Dialog from '$lib/components/ui/dialog';
   import { Label } from '$lib/components/ui/label';
@@ -26,7 +26,7 @@
   <Dialog.Content class="z-900">
     <form
       class="grid gap-6"
-      {...createAidRequest.enhance(async (form) => {
+      {...createAidRequestForm.enhance(async (form) => {
         try {
           const success = await form.submit();
           if (success) {
@@ -51,7 +51,7 @@
           <Select.Root
             required
             type="single"
-            {...createAidRequest.fields.aidType.as('select')}
+            {...createAidRequestForm.fields.aidType.as('select')}
             bind:value={selectedKey}
           >
             <Select.Trigger id="aid-type">
@@ -74,27 +74,27 @@
           <Input
             required
             id="short-description"
-            {...createAidRequest.fields.shortDescription.as('text')}
+            {...createAidRequestForm.fields.shortDescription.as('text')}
           />
         </div>
         <div class="grid gap-2">
           <Label for="details">{m.aid_details()}</Label>
-          <Textarea required id="details" {...createAidRequest.fields.details.as('text')} />
+          <Textarea required id="details" {...createAidRequestForm.fields.details.as('text')} />
         </div>
         <div class="grid gap-2">
           <Label for="date">{m.aid_date()}</Label>
-          <Input required id="date" {...createAidRequest.fields.date.as('date')} />
+          <Input required id="date" {...createAidRequestForm.fields.date.as('date')} />
         </div>
         <div class="grid gap-2">
           <Label for="location">{m.aid_location()}</Label>
-          <Input id="location" {...createAidRequest.fields.location.as('text')} />
+          <Input id="location" {...createAidRequestForm.fields.location.as('text')} />
         </div>
       </div>
       <Dialog.Footer>
         <Dialog.Close type="button" class={buttonVariants({ variant: 'outline' })}>
           {m.cancel()}
         </Dialog.Close>
-        <Button type="submit" disabled={!!createAidRequest.pending}>{m.save()}</Button>
+        <Button type="submit" disabled={!!createAidRequestForm.pending}>{m.save()}</Button>
       </Dialog.Footer>
     </form>
   </Dialog.Content>

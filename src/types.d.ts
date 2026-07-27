@@ -20,7 +20,7 @@ declare global {
     aidType: AidTypeKey;
     shortDescription: string;
     details: string;
-    location: PreciseLocation;
+    location?: PreciseLocation;
     date: Date;
   }
 }
