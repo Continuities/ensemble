@@ -67,6 +67,9 @@
     }).addTo(map);
     map.locate({ setView: true, maxZoom: 16 });
 
+    // Leaflet renders new html each time the popup opens, so we have
+    // to manually bind click handlers to buttons when it does. We
+    // also need to update and rebind popup content after state changes
     map.on('popupopen', ({ popup }) => {
       const refresh = () => {
         if (selectedAidRequest) {
@@ -79,8 +82,6 @@
           popup.close();
         }
       };
-      // Leaflet renders new html each time the popup opens, so we have
-      // to manually bind click handlers to buttons when it does
       bindPopup(refresh);
     });
   });
