@@ -5,6 +5,7 @@
   import { renderComponentToHtml } from '$lib/utils';
   import { AidRequestPopup } from '../aid-request-popup';
   import { AidRequestMarker } from '../aid-request-marker';
+  import { type LayerGroup, type Map as LeafletMap } from 'leaflet';
 
   interface Props {
     aidRequests: AidRequest[];
@@ -17,15 +18,19 @@
   const tileLayerUrl = theme === 'dark' ? DARK_TILE_LAYER_URL : TILE_LAYER_URL;
 
   let { aidRequests }: Props = $props();
+  let Leaflet = $state<typeof import('leaflet') | undefined>(undefined);
+  let map = $state<LeafletMap | undefined>(undefined);
+  let markerGroup = $state<LayerGroup | undefined>(undefined);
 
-  onMount(async () => {
-    const { default: Leaflet } = await import('leaflet');
-    const map = Leaflet.map('map').setView([51.505, -0.09], 13);
-    Leaflet.tileLayer(tileLayerUrl, {
-      maxZoom: 19,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
-    map.locate({ setView: true, maxZoom: 16 });
+  $effect(() => {
+    if (!map || !Leaflet) {
+      return;
+    }
+    if (markerGroup) {
+      markerGroup.clearLayers();
+    } else {
+      markerGroup = Leaflet.layerGroup().addTo(map);
+    }
     for (const aidRequest of aidRequests) {
       if (!aidRequest.location) {
         continue;
@@ -44,6 +49,16 @@
       }).addTo(map);
       marker.bindPopup(renderComponentToHtml(AidRequestPopup, { aidRequest }));
     }
+  });
+
+  onMount(async () => {
+    Leaflet = (await import('leaflet')).default;
+    map = Leaflet.map('map').setView([51.505, -0.09], 13);
+    Leaflet.tileLayer(tileLayerUrl, {
+      maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+    map.locate({ setView: true, maxZoom: 16 });
   });
 </script>
 
