@@ -17,6 +17,7 @@ declare global {
 
   interface AidRequest {
     id: string;
+    createdBy: string;
     aidType: AidTypeKey;
     shortDescription: string;
     details: string;

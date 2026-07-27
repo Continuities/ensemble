@@ -47,7 +47,8 @@ export const createAidRequestForm = form(
         shortDescription,
         details,
         location: await getLocationFromAddress(location),
-        date: new Date(date)
+        date: new Date(date),
+        createdBy: session.user.id
       });
     } catch (e) {
       if (e instanceof APIError) {
@@ -64,6 +65,22 @@ export const offerAid = command(
   v.pipe(v.string(), v.uuid(), v.nonEmpty()),
   async (aidRequestId) => {
     console.log('OFFER AID FOR REQUEST ', aidRequestId);
+    return { success: true };
+  }
+);
+
+export const cancelOffer = command(
+  v.pipe(v.string(), v.uuid(), v.nonEmpty()),
+  async (aidRequestId) => {
+    console.log('CANCEL AID OFFER ', aidRequestId);
+    return { success: true };
+  }
+);
+
+export const cancelRequest = command(
+  v.pipe(v.string(), v.uuid(), v.nonEmpty()),
+  async (aidRequestId) => {
+    console.log('CANCEL AID REQUEST ', aidRequestId);
     return { success: true };
   }
 );

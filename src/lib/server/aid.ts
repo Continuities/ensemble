@@ -14,6 +14,7 @@ export async function getAidRequests(): Promise<AidRequest[]> {
   const rows = await db.select().from(aidRequest);
   return rows.map((r) => ({
     id: r.id,
+    createdBy: r.createdBy,
     aidType: r.aidType as AidTypeKey,
     shortDescription: r.shortDescription,
     details: r.details,
@@ -24,6 +25,7 @@ export async function getAidRequests(): Promise<AidRequest[]> {
 
 export async function createAidRequest(newAidRequest: Omit<AidRequest, 'id'>) {
   await db.insert(aidRequest).values({
+    createdBy: newAidRequest.createdBy,
     aidType: newAidRequest.aidType,
     shortDescription: newAidRequest.shortDescription,
     details: newAidRequest.details,

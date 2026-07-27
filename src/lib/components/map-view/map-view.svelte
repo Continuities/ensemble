@@ -7,9 +7,11 @@
   import { AidRequestMarker } from '../aid-request-marker';
   import { type LayerGroup, type Map as LeafletMap } from 'leaflet';
   import { bindPopup } from '.';
+  import type { User } from 'better-auth';
 
   interface Props {
     aidRequests: AidRequest[];
+    currentUser?: User;
   }
 
   const TILE_LAYER_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -18,7 +20,7 @@
 
   const tileLayerUrl = theme === 'dark' ? DARK_TILE_LAYER_URL : TILE_LAYER_URL;
 
-  let { aidRequests }: Props = $props();
+  let { aidRequests, currentUser }: Props = $props();
   let aidRequestsById = $derived(new Map(aidRequests.map((r) => [r.id, r])));
   let Leaflet = $state<typeof import('leaflet') | undefined>(undefined);
   let map = $state<LeafletMap | undefined>(undefined);
@@ -53,7 +55,7 @@
       const marker = Leaflet.marker([aidRequest.location.lat, aidRequest.location.lng], {
         icon: markerIcon
       }).addTo(map);
-      marker.bindPopup(renderComponentToHtml(AidRequestPopup, { aidRequest }));
+      marker.bindPopup(renderComponentToHtml(AidRequestPopup, { aidRequest, currentUser }));
       marker.on('click', () => (selectedAidRequestId = aidRequest.id));
     }
   });
@@ -74,7 +76,7 @@
       const refresh = () => {
         if (selectedAidRequest) {
           popup.setContent(
-            renderComponentToHtml(AidRequestPopup, { aidRequest: selectedAidRequest })
+            renderComponentToHtml(AidRequestPopup, { aidRequest: selectedAidRequest, currentUser })
           );
           popup.update();
           bindPopup(refresh);

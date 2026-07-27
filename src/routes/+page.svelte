@@ -4,7 +4,7 @@
   let { data } = $props();
 </script>
 
-<MapView aidRequests={data.aidRequests} />
+<MapView currentUser={data.user} aidRequests={data.aidRequests} />
 <div class="absolute flex justify-center w-full bottom-12 z-900 pointer-events-none">
   <div class="pointer-events-auto">
     <RequestAidButton isLoggedIn={Boolean(data.user)} />
