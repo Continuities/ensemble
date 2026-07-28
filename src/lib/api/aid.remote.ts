@@ -10,7 +10,7 @@ import {
   deleteAidRequest,
   getAidRequest
 } from '$lib/server/aid';
-import { geocodeAddress } from '$lib/server/geocode';
+import { geocodeAddress } from '$lib/geocode';
 import { auth } from '$lib/server/auth';
 
 const getLocationFromAddress = async (
@@ -48,7 +48,7 @@ export const createAidRequestForm = form(
       error(401, 'Not logged in');
     }
     try {
-      await createAidRequest({
+      const aidRequest = await createAidRequest({
         aidType,
         shortDescription,
         details,
@@ -56,14 +56,13 @@ export const createAidRequestForm = form(
         date: new Date(date),
         createdBy: session.user.id
       });
+      return { success: true, aidRequest };
     } catch (e) {
       if (e instanceof APIError) {
         error(400, e.message || 'Failed to create aid request');
       }
       error(500, 'Unexpected error');
     }
-
-    return { success: true };
   }
 );
 

@@ -5,12 +5,13 @@
   import { renderComponentToHtml } from '$lib/utils';
   import { AidRequestPopup } from '../aid-request-popup';
   import { AidRequestMarker } from '../aid-request-marker';
-  import { type Marker, type Popup, type Map as LeafletMap } from 'leaflet';
+  import { type Marker, type Popup, type Map as LeafletMap, type LatLngTuple } from 'leaflet';
   import { bindPopup } from '.';
   import type { User } from 'better-auth';
 
   interface Props {
     aidRequests: AidRequest[];
+    newAidRequest?: AidRequest;
     currentUser?: User;
   }
 
@@ -20,7 +21,10 @@
 
   const tileLayerUrl = theme === 'dark' ? DARK_TILE_LAYER_URL : TILE_LAYER_URL;
 
-  let { aidRequests, currentUser }: Props = $props();
+  // eslint-disable-next-line svelte/prefer-svelte-reactivity
+  const markersById = new Map<string, Marker>();
+
+  let { aidRequests, newAidRequest, currentUser }: Props = $props();
   let aidRequestsById = $derived(new Map(aidRequests.map((r) => [r.id, r])));
   let Leaflet = $state<typeof import('leaflet') | undefined>(undefined);
   let map = $state<LeafletMap | undefined>(undefined);
@@ -29,9 +33,6 @@
     selectedAidRequestId ? aidRequestsById.get(selectedAidRequestId) : undefined
   );
   let currentPopup = $state<Popup | undefined>(undefined);
-
-  // eslint-disable-next-line svelte/prefer-svelte-reactivity
-  const markersById = new Map<string, Marker>();
 
   // This effect redraws the markers whenever the AidRequests prop changes
   $effect(() => {
@@ -54,12 +55,20 @@
         tooltipAnchor: [16, -28],
         shadowSize: [41, 41]
       });
-      const marker = Leaflet.marker([aidRequest.location.lat, aidRequest.location.lng], {
+      const markerLocation: LatLngTuple = [aidRequest.location.lat, aidRequest.location.lng];
+      const marker = Leaflet.marker(markerLocation, {
         icon: markerIcon
       }).addTo(map);
       marker.bindPopup('');
-      marker.on('click', () => (selectedAidRequestId = aidRequest.id));
+      marker.on('click', () => {
+        selectedAidRequestId = aidRequest.id;
+      });
       markersById.set(aidRequest.id, marker);
+      if (newAidRequest && newAidRequest.id === aidRequest.id) {
+        selectedAidRequestId = aidRequest.id;
+        map.flyTo(markerLocation);
+        marker.openPopup();
+      }
     }
     for (const [id, marker] of markersById.entries()) {
       if (!seenAidRequests.has(id)) {
