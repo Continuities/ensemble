@@ -41,18 +41,26 @@ export async function getAidRequests(): Promise<AidRequest[]> {
   return rows.map(rowToAidRequest);
 }
 
-export async function createAidRequest(newAidRequest: Omit<AidRequest, 'id'>) {
-  await db.insert(aidRequest).values({
-    createdBy: newAidRequest.createdBy,
-    aidType: newAidRequest.aidType,
-    shortDescription: newAidRequest.shortDescription,
-    details: newAidRequest.details,
-    address: newAidRequest.location?.address,
-    location: newAidRequest.location
-      ? { x: newAidRequest.location.lng, y: newAidRequest.location.lat }
-      : undefined,
-    date: newAidRequest.date.toISOString().split('T')[0]
-  });
+export async function createAidRequest(newAidRequest: Omit<AidRequest, 'id'>): Promise<AidRequest> {
+  const [{ id }] = await db
+    .insert(aidRequest)
+    .values({
+      createdBy: newAidRequest.createdBy,
+      aidType: newAidRequest.aidType,
+      shortDescription: newAidRequest.shortDescription,
+      details: newAidRequest.details,
+      address: newAidRequest.location?.address,
+      location: newAidRequest.location
+        ? { x: newAidRequest.location.lng, y: newAidRequest.location.lat }
+        : undefined,
+      date: newAidRequest.date.toISOString().split('T')[0]
+    })
+    .returning({ id: aidRequest.id });
+
+  return {
+    ...newAidRequest,
+    id
+  };
 }
 
 export async function createAidOffer(helperId: string, aidRequestId: string) {

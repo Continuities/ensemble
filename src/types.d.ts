@@ -30,4 +30,10 @@ declare global {
     date: Date;
     helpers?: Helper[];
   }
+
+  interface AddressSearchResult {
+    id: string;
+    name: string;
+    fullAddress: string;
+  }
 }

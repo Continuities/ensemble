@@ -9,14 +9,16 @@
   import * as Select from '$lib/components/ui/select';
   import { Input } from '$lib/components/ui/input';
   import { Textarea } from '$lib/components/ui/textarea/';
+  import { AddressInput } from '$lib/components/address-input';
 
   const aidTypes = Object.entries(AID_TYPE);
   aidTypes.sort(([a], [b]) => a.localeCompare(b));
 
   interface Props {
     isLoggedIn?: boolean;
+    onCreate?: (created: AidRequest) => void;
   }
-  let { isLoggedIn }: Props = $props();
+  let { isLoggedIn, onCreate }: Props = $props();
 
   let isDialogOpen = $state(false);
   let selectedKey = $state<AidTypeKey | undefined>(undefined);
@@ -34,15 +36,18 @@
       <CrossIcon />
       {m.aid_create()}
     </Dialog.Trigger>
-    <Dialog.Content class="z-900">
+    <Dialog.Content class="z-900 flex">
       <form
-        class="grid gap-6"
+        class="flex flex-col gap-6 w-full"
         {...createAidRequestForm.enhance(async (form) => {
           try {
             const success = await form.submit();
             if (success) {
               selectedKey = undefined;
               isDialogOpen = false;
+              if (form.result && form.result.success && onCreate) {
+                onCreate(form.result.aidRequest);
+              }
             }
           } catch (err) {
             console.error(err);
@@ -56,7 +61,7 @@
             <div class="italic mt-1">{m.aid_disclaimer()}</div>
           </Dialog.Description>
         </Dialog.Header>
-        <div class="grid gap-4">
+        <div class="flex flex-col gap-4 w-full">
           <div class="grid gap-2">
             <Label for="aid-type">{m.aid_type()}</Label>
             <Select.Root
@@ -96,9 +101,9 @@
             <Label for="date">{m.aid_date()}</Label>
             <Input required id="date" {...createAidRequestForm.fields.date.as('date')} />
           </div>
-          <div class="grid gap-2">
+          <div class="flex flex-col gap-2">
             <Label for="location">{m.aid_location()}</Label>
-            <Input id="location" {...createAidRequestForm.fields.location.as('text')} />
+            <AddressInput id="location" {...createAidRequestForm.fields.location.as('text')} />
           </div>
         </div>
         <Dialog.Footer>
