@@ -22,7 +22,8 @@ const rowToAidRequest = (row: any): AidRequest => ({
   details: row.details,
   location: getLocation(row),
   date: new Date(row.date),
-  helpers: row.helpers
+  helpers: row.helpers,
+  owner: row.owner
 });
 
 export async function getAidRequest(id: string): Promise<AidRequest | undefined> {
@@ -35,7 +36,8 @@ export async function getAidRequest(id: string): Promise<AidRequest | undefined>
 export async function getAidRequests(): Promise<AidRequest[]> {
   const rows = await db.query.aidRequest.findMany({
     with: {
-      helpers: true
+      helpers: true,
+      owner: true
     }
   });
   return rows.map(rowToAidRequest);

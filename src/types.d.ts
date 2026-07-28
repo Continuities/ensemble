@@ -1,5 +1,6 @@
 import type { Component } from 'svelte';
 import { AID_TYPE } from '$lib/aid';
+import type { User } from 'better-auth';
 
 declare global {
   interface AidType {
@@ -29,6 +30,7 @@ declare global {
     location?: PreciseLocation;
     date: Date;
     helpers?: Helper[];
+    owner?: User;
   }
 
   interface AddressSearchResult {

@@ -2,9 +2,10 @@
   import type { User } from 'better-auth';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Button } from '$lib/components/ui/button';
-  import * as Avatar from '$lib/components/ui/avatar';
+
   import { m } from '$lib/paraglide/messages';
   import { signout } from '$lib/api/auth.remote';
+  import UserAvatar from '../user-avatar/user-avatar.svelte';
 
   interface Props {
     user: User | undefined;
@@ -16,12 +17,7 @@
 {#if user}
   <DropdownMenu.Root>
     <DropdownMenu.Trigger>
-      <Avatar.Root size="lg">
-        <Avatar.Image src={user.image} alt={user.name} />
-        <Avatar.Fallback>
-          {user.name[0]}
-        </Avatar.Fallback>
-      </Avatar.Root>
+      <UserAvatar size="lg" {user} />
     </DropdownMenu.Trigger>
     <DropdownMenu.Content class="w-56 z-900" align="end" sideOffset={16}>
       <DropdownMenu.Label>{m.auth_account()}</DropdownMenu.Label>

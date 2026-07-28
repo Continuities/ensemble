@@ -1,5 +1,6 @@
 <script lang="ts">
   import 'leaflet/dist/leaflet.css';
+  import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css';
   import { onMount } from 'svelte';
   import { theme } from '$lib/theme.svelte';
   import { renderComponentToHtml } from '$lib/utils';
@@ -95,7 +96,9 @@
 
   onMount(async () => {
     Leaflet = (await import('leaflet')).default;
+    const { LocateControl } = await import('leaflet.locatecontrol');
     map = Leaflet.map('map').setView([51.505, -0.09], 13);
+    new LocateControl().addTo(map);
     Leaflet.tileLayer(tileLayerUrl, {
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'

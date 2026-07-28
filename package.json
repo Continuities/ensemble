@@ -60,6 +60,7 @@
   },
   "dependencies": {
     "leaflet": "^1.9.4",
+    "leaflet.locatecontrol": "^0.90.0",
     "uuid": "^14.0.1"
   }
 }
